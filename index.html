@@ -3,26 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abastible Linares - Control de Pedidos</title>
+    <title>Abastible Linares</title>
     <style>
-        :root { --naranja: #ffcc00; --azul: #003399; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 350px; border-top: 8px solid var(--naranja); }
-        .logo-placeholder { background: var(--azul); color: white; width: 80px; height: 80px; line-height: 80px; border-radius: 50%; margin: 0 auto 20px; font-weight: bold; font-size: 12px; }
-        h1 { color: var(--azul); font-size: 24px; margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 30px; }
-        .btn-google { background-color: white; border: 1px solid #dadce0; color: #3c4043; padding: 12px 20px; border-radius: 4px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; transition: background-color .2s; }
-        .btn-google:hover { background-color: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background-color: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+        }
+        .login-card { 
+            background: white; 
+            padding: 50px 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            text-align: center; 
+            width: 100%; 
+            max-width: 320px; 
+        }
+        h1 { color: #003399; font-size: 28px; margin-bottom: 30px; }
+        .btn-google { 
+            background-color: white; 
+            border: 1px solid #dadce0; 
+            color: #3c4043; 
+            padding: 12px; 
+            border-radius: 4px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+            font-size: 16px;
+        }
         .btn-google img { width: 18px; margin-right: 10px; }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-        <div class="logo-placeholder">ABASTIBLE</div>
         <h1>¡Bienvenido!</h1>
-        <p>Acceso al Sistema de Control de Pedidos Linares</p>
-        
         <button class="btn-google" onclick="window.login()">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
             Entrar con Google
@@ -49,15 +71,14 @@
         window.login = function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    console.log("Acceso concedido:", result.user.displayName);
                     window.location.href = "pedidos.html";
                 })
                 .catch((error) => {
-                    console.error("Error:", error.code);
+                    console.error("Error Code:", error.code);
                     if (error.code === 'auth/unauthorized-domain') {
-                        alert("Error: El dominio no está autorizado en Firebase. Verifica la consola de Firebase.");
+                        alert("ERROR CRÍTICO: El dominio todavía no es reconocido por Firebase. Asegúrate de que 'abastiblegaslinares.github.io' esté en la lista de Dominios Autorizados en la consola de Firebase.");
                     } else {
-                        alert("Error de inicio de sesión: " + error.message);
+                        alert("Error: " + error.message);
                     }
                 });
         };
