@@ -3,121 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión - Abastible</title>
+    <title>Control Clientes - Abastible Linares</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        :root { --naranja: #FF5000; --azul: #003399; --fondo: #f0f2f5; }
+        :root { --naranja: #FF5000; --azul: #002D72; --gris-fondo: #f8f9fa; }
         
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--fondo); color: #333; }
-        
-        /* Loader inicial */
-        #loader { text-align: center; margin-top: 100px; font-weight: bold; color: var(--azul); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--gris-fondo); color: #333; }
 
-        /* Barra de Navegación Superior */
-        nav { 
+        /* HEADER & VENTAS RÁPIDAS */
+        header { 
             background: var(--azul); 
-            padding: 0 20px; 
+            color: white; 
+            padding: 10px 25px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            height: 60px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        .nav-links { display: flex; gap: 20px; }
-        
-        .nav-item { 
-            color: white; 
-            text-decoration: none; 
-            font-weight: 500; 
-            padding: 20px 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .nav-item:hover { background: rgba(255,255,255,0.1); border-bottom: 3px solid var(--naranja); }
-
-        .user-area { display: flex; align-items: center; gap: 15px; color: white; font-size: 14px; }
-        
-        .btn-logout { 
+        .btn-venta-rapida { 
             background: var(--naranja); 
             color: white; 
             border: none; 
-            padding: 6px 12px; 
-            border-radius: 4px; 
+            width: 45px; height: 45px; 
+            border-radius: 50%; 
+            font-size: 24px; font-weight: bold; 
             cursor: pointer; 
-            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+        .btn-venta-rapida:hover { transform: scale(1.1); }
+
+        /* NAVEGACIÓN (TABS) */
+        .nav-tabs { 
+            background: white; 
+            display: flex; 
+            justify-content: center; 
+            border-bottom: 1px solid #ddd;
+        }
+        .tab { 
+            padding: 15px 25px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            color: #666; 
+            transition: 0.3s;
+        }
+        .tab.active { 
+            color: var(--naranja); 
+            border-bottom: 3px solid var(--naranja); 
         }
 
-        /* Contenedor de Contenido */
-        .container { max-width: 1000px; margin: 30px auto; padding: 20px; }
+        /* ÁREA DE CONTENIDO */
+        .main-content { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
         
-        .card { 
+        .section-card { 
             background: white; 
             border-radius: 12px; 
             padding: 30px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--naranja);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            min-height: 400px;
         }
 
-        h2 { color: var(--azul); margin-top: 0; display: flex; align-items: center; gap: 10px; }
-        
-        /* Estética de Formulario */
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
-        input, select { 
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; 
-            box-sizing: border-box; font-size: 16px;
-        }
-        
-        .btn-action { 
-            background: var(--naranja); color: white; border: none; padding: 15px; 
-            border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; 
-            font-size: 18px; transition: transform 0.1s;
-        }
-        .btn-action:active { transform: scale(0.98); }
+        h2 { color: var(--naranja); margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+
+        /* ESTILOS DE GUÍA DE USO */
+        .grid-clientes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card-cliente { border: 1px solid #eee; padding: 15px; border-radius: 8px; text-align: center; }
+        .btn-wsp { background: #25D366; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; }
+
+        #loader { text-align: center; margin-top: 100px; font-size: 1.2rem; color: var(--azul); }
     </style>
 </head>
 <body>
 
-    <div id="loader">Cargando panel de gestión...</div>
+    <div id="loader">Iniciando sistema logístico...</div>
 
     <div id="app-content" style="display: none;">
-        <nav>
-            <div class="nav-links">
-                <div class="nav-item" onclick="cambiarSeccion('Despacho')">Despacho</div>
-                <div class="nav-item" onclick="cambiarSeccion('Agenda')">Agenda</div>
-                <div class="nav-item" onclick="cambiarSeccion('Gestión')">Gestión</div>
-                <div class="nav-item" onclick="cambiarSeccion('Métricas')">Métricas</div>
-            </div>
-            
-            <div class="user-area">
-                <span id="user-display"></span>
-                <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
-            </div>
-        </nav>
+        <header>
+            <div style="font-weight: bold; font-size: 1.2rem;">ABASTIBLE LINARES</div>
+            <button class="btn-venta-rapida" onclick="abrirVentaRapida()" title="Registro de Venta Rápida">+</button>
+        </header>
 
-        <div class="container">
-            <div class="card">
-                <h2 id="seccion-titulo">Despacho</h2>
-                <div id="seccion-contenido">
-                    <div class="form-group">
-                        <label>Nombre del Cliente</label>
-                        <input type="text" placeholder="Ingrese nombre o dirección">
+        <div class="nav-tabs">
+            <div class="tab active" onclick="cambiarTab(this, 'Despacho')">Despacho</div>
+            <div class="tab" onclick="cambiarTab(this, 'Agenda')">Agenda</div>
+            <div class="tab" onclick="cambiarTab(this, 'Gestión')">Gestión</div>
+            <div class="tab" onclick="cambiarTab(this, 'Métricas')">Métricas</div>
+        </div>
+
+        <div class="main-content">
+            <div class="section-card">
+                <h2 id="titulo-seccion">Despacho (Dashboard)</h2>
+                <div id="contenido-dinamico">
+                    <p>Visualización de zona Linares y acceso directo a clientes.</p>
+                    <div class="grid-clientes">
+                        <div class="card-cliente">
+                            <strong>Cliente Ejemplo</strong>
+                            <button class="btn-wsp">WhatsApp</button>
+                            <button style="margin-top:5px; width:100%; cursor:pointer;">REPETIR PEDIDO</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Producto</label>
-                        <select>
-                            <option>Cilindro 11kg</option>
-                            <option>Cilindro 15kg</option>
-                            <option>Cilindro 45kg</option>
-                            <option>H-15</option>
-                        </select>
-                    </div>
-                    <button class="btn-action">Registrar en Despacho</button>
                 </div>
             </div>
         </div>
@@ -136,26 +124,36 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Verificar sesión
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('app-content').style.display = 'block';
-                document.getElementById('user-display').innerText = user.displayName;
             } else {
                 window.location.replace("index.html");
             }
         });
 
-        // Lógica de navegación de la barra
-        function cambiarSeccion(nombre) {
-            document.getElementById('seccion-titulo').innerText = nombre;
-            // Aquí podrás añadir lógica para cambiar el formulario según la sección
-            console.log("Cambiando a sección: " + nombre);
+        function cambiarTab(elemento, nombreSeccion) {
+            // Manejo de UI de las pestañas
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            elemento.classList.add('active');
+            
+            // Cambio de Título
+            document.getElementById('titulo-seccion').innerText = nombreSeccion;
+            
+            // Aquí se cargará la lógica de cada pestaña según tu guía
+            const contenido = document.getElementById('contenido-dinamico');
+            if(nombreSeccion === 'Métricas') {
+                contenido.innerHTML = '<button class="btn-wsp">COPIAR REPORTE WHATSAPP</button><p>Reporte de los últimos 7 días...</p>';
+            } else if(nombreSeccion === 'Agenda') {
+                contenido.innerHTML = '<p>Calendario y Predicciones de consumo (💡)</p>';
+            } else {
+                contenido.innerHTML = '<p>Contenido de ' + nombreSeccion + ' según guía de uso.</p>';
+            }
         }
 
-        function cerrarSesion() {
-            auth.signOut().then(() => window.location.replace("index.html"));
+        function abrirVentaRapida() {
+            alert("Iniciando Selección Inteligente de Cliente...");
         }
     </script>
 </body>
