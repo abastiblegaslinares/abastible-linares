@@ -76,8 +76,8 @@
             authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
             projectId: "control-de-pedidos-71c6b",
             storageBucket: "control-de-pedidos-71c6b.firebasestorage.app",
-            messagingSenderId: "655696871766",
-            appId: "1:655696871766:web:e9214d34059fa7d74d56f7"
+            messagingSenderId: "367280386762",
+            appId: "1:367280386762:web:a6f7b764d0d0c3a2f3f9f3"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -107,14 +107,18 @@
         });
 
         // Inicio de sesión por Redirección (Mejor para Hosting)
-        function login() {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log("Ingreso exitoso");
-                })
-                .catch((error) => {
-                    console.error("Error al entrar:", error.message);
-                });
+        window.login = function() {
+            window.login = function() {
+                signInWithPopup(auth, provider)
+                    .then((result) => {
+                        console.log("¡Éxito!", result.user)
+                        alert("Bienvenido " + result.user.displayName);
+                        window.location.href = "pedidos.html";
+                    })
+                    .catch((error) => {
+                        console.error("Error al entrar:", error.message);
+                        alert("Error: " + error.message);
+                    });
         }
 
         // --- NAVEGACIÓN ---
