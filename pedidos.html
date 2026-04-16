@@ -3,193 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Clientes - Abastible Linares</title>
+    <title>Abastible Linares - Gestión Profesional</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        :root { --naranja: #FF5000; --azul: #002D72; --verde: #25D366; --fondo: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--fondo); color: #333; }
+        :root { --naranja: #FF5000; --azul: #002D72; --fondo: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--fondo); }
         
-        /* Header y Botón Flotante (+) */
+        /* Header Naranja solicitado */
         header { 
-            background: var(--azul); color: white; padding: 12px 25px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            position: sticky; top: 0; z-index: 1000; 
-        }
-        .btn-plus { 
-            background: var(--naranja); color: white; border: none; 
-            width: 50px; height: 50px; border-radius: 50%; 
-            font-size: 28px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background: var(--naranja); color: white; padding: 15px 25px; 
+            display: flex; justify-content: center; align-items: center; 
+            position: sticky; top: 0; z-index: 1000; font-weight: bold; font-size: 1.2rem;
         }
 
-        /* Navegación Inferior Estilo App */
-        .nav-bar { 
-            background: white; display: flex; justify-content: space-around; 
-            border-top: 1px solid #ddd; position: fixed; bottom: 0; width: 100%; height: 65px;
-        }
-        .nav-item { 
-            flex: 1; text-align: center; padding: 12px; cursor: pointer; 
-            font-weight: bold; color: #666; font-size: 13px;
-        }
-        .nav-item.active { color: var(--naranja); border-top: 3px solid var(--naranja); }
-
-        /* Contenedores */
-        .container { padding: 20px; padding-bottom: 90px; max-width: 1100px; margin: auto; }
+        .container { padding: 20px; padding-bottom: 100px; max-width: 1200px; margin: auto; }
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Calendario Lunes-Domingo */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: #ddd; border: 1px solid #ddd; }
-        .cal-day { background: white; min-height: 80px; padding: 5px; font-size: 12px; }
-        .cal-header { background: var(--azul); color: white; text-align: center; padding: 5px; font-weight: bold; }
-        .sale-dot { background: var(--verde); color: white; padding: 2px; border-radius: 3px; margin-top: 2px; font-size: 10px; }
-        .pred-dot { background: var(--naranja); color: white; padding: 2px; border-radius: 3px; margin-top: 2px; font-size: 10px; }
+        h2 { color: var(--naranja); font-size: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        /* Botones */
+        .btn-naranja { background: var(--naranja); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-azul { background: var(--azul); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+        
+        /* Calendario */
+        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #eee; }
+        .cal-header { background: var(--azul); color: white; padding: 5px; text-align: center; font-size: 12px; }
+        .cal-day { background: white; min-height: 60px; padding: 5px; font-size: 11px; }
 
-        /* Mapa */
-        .map-frame { width: 100%; height: 350px; border-radius: 10px; border: none; }
+        /* Formulario Gestión */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 100%; box-sizing: border-box; }
 
-        /* Botones Acción */
-        .btn-wsp { background: var(--verde); color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 5px; }
-        .btn-word { background: #2b579a; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
+        /* Navegación Inferior */
+        .nav-bar { background: white; display: flex; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #ddd; height: 70px; }
+        .nav-item { flex: 1; text-align: center; padding: 15px; cursor: pointer; color: #666; font-weight: bold; }
+        .nav-item.active { color: var(--naranja); border-top: 4px solid var(--naranja); }
 
         .hidden { display: none; }
-        h2 { color: var(--naranja); font-size: 22px; margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div><strong>ABASTIBLE LINARES</strong></div>
-        <button class="btn-plus" onclick="mostrarSeccion('venta-rapida')">+</button>
-    </header>
+    <header>CONTROL CLIENTES ABASTIBLE LINARES</header>
 
-    <div class="container" id="content-main">
+    <div class="container">
         
-        <div id="despacho" class="section">
+        <div id="agenda" class="section">
             <div class="card">
-                <h2>Zona de Despacho (Linares)</h2>
-                <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3224.5!2d-71.6!3d-35.84!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9665f90!2sLinares%2C%20Maule!5e0!3m2!1ses-419!2scl!4v1700000000"></iframe>
-            </div>
-            
-            <div class="card">
-                <h2>Clientes en Alerta (Frecuencia)</h2>
-                <div id="lista-alertas">
-                    <div style="border-left: 5px solid var(--naranja); padding: 10px; background: #fff9f5;">
-                        <strong>Panadería La Unión</strong> - Toca Hoy (Cada 7 días)<br>
-                        <small>📍 Arturo Prat 450</small>
-                        <button class="btn-wsp" onclick="coordinarPedido('Panadería La Unión', 'Arturo Prat 450', '2x 45kg', 1)">COORDINAR DESPACHO (Chofer 1)</button>
+                <h2>Calendario <button class="btn-naranja" onclick="mostrarModal('modalPedido')">Pedido Pasado</button></h2>
+                <div class="cal-nav">
+                    <button onclick="cambiarMes(-1)">◀ Ant</button>
+                    <strong id="mes-actual">Abril 2026</strong>
+                    <button onclick="cambiarMes(1)">Sig ▶</button>
+                </div>
+                <div class="calendar-grid" id="calendario">
                     </div>
-                </div>
             </div>
-        </div>
 
-        <div id="agenda" class="section hidden">
             <div class="card">
-                <h2>Calendario de Ventas y Predicciones</h2>
-                <div class="calendar-grid">
-                    <div class="cal-header">Lun</div><div class="cal-header">Mar</div><div class="cal-header">Mié</div>
-                    <div class="cal-header">Jue</div><div class="cal-header">Vie</div><div class="cal-header">Sáb</div><div class="cal-header">Dom</div>
-                    <div class="cal-day">13 <div class="sale-dot">🚚 C3 - 2x15</div></div>
-                    <div class="cal-day">14 <div class="pred-dot">💡 Panadería</div></div>
-                    <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
-                </div>
-            </div>
-            <div class="card">
-                <h2>Historial y Reporte Word</h2>
-                <select id="historial-cliente" style="width:100%; padding:10px; margin-bottom:10px;">
-                    <option>Seleccionar Cliente Comercial...</option>
-                    <option>Restaurant Linares</option>
+                <h2>Descargar Historial</h2>
+                <select id="historial-cliente" style="margin-bottom:10px;">
+                    <option>Seleccionar Cliente...</option>
                 </select>
-                <button class="btn-word" onclick="exportarWord()">Descargar Historial (.doc)</button>
+                <select id="historial-rango">
+                    <option value="30">Últimos 30 días</option>
+                    <option value="60">Últimos 2 meses</option>
+                    <option value="180">Últimos 6 meses</option>
+                    <option value="365">Último año</option>
+                    <option value="730">Últimos 2 años</option>
+                    <option value="all">Historial todos los años</option>
+                </select>
+                <button class="btn-azul" style="margin-top:10px; width:100%;" onclick="descargarHistorial()">Exportar Historial (.doc)</button>
             </div>
         </div>
 
         <div id="gestion" class="section hidden">
             <div class="card">
                 <h2>Configuración de Choferes</h2>
-                <div id="lista-choferes">
-                    <input type="text" placeholder="Chofer 1" value="Juan Pérez" style="width:80%; padding:8px; margin-bottom:5px;">
+                <div id="choferes-lista">
+                    <div class="form-grid" style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                        <input type="text" placeholder="Nombre Chofer 1">
+                        <input type="text" placeholder="Patente Camioneta">
+                        <input type="text" placeholder="Teléfono">
+                    </div>
                 </div>
             </div>
+
             <div class="card">
-                <h2>Precios Negociados por Formato</h2>
-                <table style="width:100%; font-size:14px;">
-                    <tr><td>5 Kg</td><td><input type="number" value="12000" style="width:80px;"></td></tr>
-                    <tr><td>11 Kg</td><td><input type="number" value="21500" style="width:80px;"></td></tr>
-                    <tr><td>15 VMA</td><td><input type="number" value="28000" style="width:80px;"></td></tr>
-                </table>
+                <h2>Precio por Cliente <button class="btn-naranja" onclick="mostrarModal('modalCliente')">Nuevo Cliente</button></h2>
+                <select style="margin-bottom:10px;">
+                    <option>Editar precios de cliente existente...</option>
+                </select>
+                <div id="precios-edit">
+                    <table style="width:100%;">
+                        <tr><td>5 Kg</td><td><input type="number" placeholder="$"></td></tr>
+                        <tr><td>11 Kg</td><td><input type="number" placeholder="$"></td></tr>
+                        <tr><td>15 VMA</td><td><input type="number" placeholder="$"></td></tr>
+                    </table>
+                    <button class="btn-azul" style="width:100%; margin-top:10px;">Guardar Cambios</button>
+                </div>
             </div>
         </div>
 
         <div id="metricas" class="section hidden">
-            <div class="card" style="background: var(--azul); color: white;">
-                <h2 style="color: white; border-bottom-color: rgba(255,255,255,0.2);">Semana Full</h2>
-                <div style="font-size: 24px;">Total: $450.800</div>
-                <div style="margin-top:10px;">Cilindros vendidos: 42</div>
-            </div>
-            <button class="btn-wsp" onclick="copiarReporte()">COPIAR REPORTE WHATSAPP 📋</button>
-            <button class="btn-word" onclick="descargarTXT()" style="margin-top:10px; width:100%;">DESCARGAR RESPALDO (.TXT)</button>
+            <div class="card"><h2>Reporte Semanal</h2><button class="btn-naranja" onclick="exportar('semanal')">Descargar Semanal</button></div>
+            <div class="card"><h2>Reporte Mensual</h2><button class="btn-naranja" onclick="exportar('mensual')">Descargar Mensual</button></div>
+            <div class="card"><h2>Reporte Anual</h2><button class="btn-naranja" onclick="exportar('anual')">Descargar Anual</button></div>
+            <div class="card"><h2>Reporte Total</h2><button class="btn-naranja" onclick="exportar('total')">Descargar Total</button></div>
+        </div>
+
+        <div id="despacho" class="section hidden">
+            <div class="card"><h2>Mapa y Ruta</h2><p>Mapa centrado en Linares...</p></div>
         </div>
 
     </div>
 
+    <div id="modalPedido" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; overflow-y:auto;">
+        <div class="card" style="margin:20px; background:white;">
+            <h2>Registrar Pedido Pasado</h2>
+            <div class="form-grid">
+                <input type="text" placeholder="Nombre Cliente">
+                <input type="date">
+                <input type="time">
+                <select><option>Chofer 1</option><option>Chofer 2</option></select>
+                <input type="text" placeholder="Ubicación">
+            </div>
+            <button class="btn-naranja" style="width:100%; margin-top:15px;" onclick="cerrarModal('modalPedido')">Guardar y Salir</button>
+        </div>
+    </div>
+
+    <div id="modalCliente" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000;">
+        <div class="card" style="margin:20px;">
+            <h2>Nuevo Cliente Comercial</h2>
+            <input type="text" placeholder="Nombre Cliente" style="margin-bottom:10px;">
+            <input type="text" placeholder="Ubicación" style="margin-bottom:10px;">
+            <input type="text" placeholder="Teléfono" style="margin-bottom:10px;">
+            <button class="btn-azul">+ Agregar Cilindro</button>
+            <select style="margin-top:10px;"><option>Seleccionar Chofer (1-6)</option></select>
+            <button class="btn-naranja" style="width:100%; margin-top:15px;" onclick="cerrarModal('modalCliente')">Guardar y Salir</button>
+        </div>
+    </div>
+
     <div class="nav-bar">
-        <div class="nav-item active" onclick="mostrarSeccion('despacho', this)">📊<br>Despacho</div>
-        <div class="nav-item" onclick="mostrarSeccion('agenda', this)">📅<br>Agenda</div>
-        <div class="nav-item" onclick="mostrarSeccion('gestion', this)">⚙️<br>Gestión</div>
-        <div class="nav-item" onclick="mostrarSeccion('metricas', this)">📈<br>Métricas</div>
+        <div class="nav-item" onclick="nav('despacho', this)">MAPA</div>
+        <div class="nav-item active" onclick="nav('agenda', this)">AGENDA</div>
+        <div class="nav-item" onclick="nav('gestion', this)">GESTIÓN</div>
+        <div class="nav-item" onclick="nav('metricas', this)">MÉTRICAS</div>
     </div>
 
     <script>
-        // Configuración Firebase (Mantenemos tu conexión exitosa)
-        const firebaseConfig = {
-            apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
-            authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
-            projectId: "control-de-pedidos-71c6b",
-            storageBucket: "control-de-pedidos-71c6b.appspot.com",
-            messagingSenderId: "367280386762",
-            appId: "1:367280386762:web:a6f7b764d0d0c3a2f3f9f3"
-        };
-        firebase.initializeApp(firebaseConfig);
-
-        function mostrarSeccion(id, el) {
+        // Lógica de Navegación
+        function nav(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
-            if(el) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                el.classList.add('active');
-            }
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
         }
 
-        // FUNCIÓN WHATSAPP COORDINACIÓN
-        function coordinarPedido(cliente, dir, pedido, chofer) {
-            const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dir + ' Linares')}`;
-            const texto = `🚚 *COORDINACIÓN ABASTIBLE*\n\n*Cliente:* ${cliente}\n*Pedido:* ${pedido}\n*Dirección:* ${dir}\n*Chofer:* #${chofer}\n\n📍 *Ubicación:* ${mapsLink}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
+        // Modales
+        function mostrarModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // Simulación Calendario
+        function cambiarMes(n) { alert("Cambiando a mes: " + n); }
+
+        function descargarHistorial() {
+            const range = document.getElementById('historial-rango').value;
+            alert("Generando Word con rango: " + range);
         }
 
-        // EXPORTAR WORD (HISTORIAL)
-        function exportarWord() {
-            const cliente = document.getElementById('historial-cliente').value;
-            const contenido = `
-                <div style="font-family: Arial; color: #333;">
-                    <h1 style="color: #FF5000;">Historial de pedidos: ${cliente}</h1>
-                    <table border="1" style="width:100%; border-collapse: collapse;">
-                        <tr style="background: #eee;"><th>Fecha</th><th>Producto</th><th>Cant.</th><th>Total</th></tr>
-                        <tr><td>12/04/2026</td><td>45 Kg</td><td>2</td><td>$98.000</td></tr>
-                        <tr><td>05/04/2026</td><td>45 Kg</td><td>2</td><td>$98.000</td></tr>
-                    </table>
-                </div>`;
-            const blob = new Blob(['\ufeff', contenido], { type: 'application/msword' });
-            saveAs(blob, `Historial de pedidos [${cliente}].doc`);
-        }
-
-        function descargarTXT() {
-            const data = "REPORTE SEMANAL ABASTIBLE LINARES\nTotal Ingresos: $450.800\nCilindros: 42";
-            const blob = new Blob([data], { type: 'text/plain' });
-            saveAs(blob, "Reporte_Semanal.txt");
+        function exportar(tipo) {
+            alert("Descargando reporte " + tipo + " con cálculos en Pesos Chilenos.");
         }
     </script>
 </body>
