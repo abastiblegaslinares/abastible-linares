@@ -3,49 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abastible Linares</title>
+    <title>Acceso Abastible</title>
     <style>
         body { 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; 
-            background-color: #f0f2f5; 
+            background-color: #ffffff; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
         }
-        .login-card { 
-            background: white; 
-            padding: 50px 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
-            text-align: center; 
-            width: 100%; 
-            max-width: 320px; 
+        .container { text-align: center; }
+        /* Bienvenido en NARANJA */
+        h1 { 
+            color: #FF5000; 
+            font-size: 32px; 
+            margin-bottom: 40px; 
+            font-weight: bold; 
         }
-        /* Letras de Bienvenido en color naranja */
-        h1 { color: #ffcc00; font-size: 28px; margin-bottom: 30px; font-weight: bold; }
-        
         .btn-google { 
             background-color: white; 
             border: 1px solid #dadce0; 
             color: #3c4043; 
-            padding: 12px; 
+            padding: 12px 24px; 
             border-radius: 4px; 
+            font-size: 16px; 
             font-weight: 500; 
             cursor: pointer; 
-            display: flex; 
+            display: inline-flex; 
             align-items: center; 
-            justify-content: center; 
-            width: 100%; 
-            font-size: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .btn-google img { width: 18px; margin-right: 10px; }
+        .btn-google:hover { background-color: #f8f9fa; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
+    <div class="container">
         <h1>¡Bienvenido!</h1>
         <button class="btn-google" onclick="window.login()">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
@@ -59,7 +55,7 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
-            // TRUCO FINAL: Cambiamos firebaseapp.com por web.app que es más compatible con GitHub
+            // Usamos el dominio DEFAULT para asegurar la conexión
             authDomain: "control-de-pedidos-71c6b.web.app", 
             projectId: "control-de-pedidos-71c6b",
             storageBucket: "control-de-pedidos-71c6b.appspot.com",
@@ -77,12 +73,8 @@
                     window.location.href = "pedidos.html";
                 })
                 .catch((error) => {
-                    console.error("Código de error:", error.code);
-                    if (error.code === 'auth/unauthorized-domain') {
-                        alert("ERROR DE DOMINIO: Google aún no autoriza este link. Por favor, asegúrate de que 'abastiblegaslinares.github.io' esté guardado en la consola de Firebase sin espacios ni https.");
-                    } else {
-                        alert("Error: " + error.message);
-                    }
+                    console.error("Error:", error.code);
+                    alert("Error: " + error.code + ". Verifique que el dominio Custom esté autorizado.");
                 });
         };
     </script>
