@@ -20,7 +20,7 @@
             width: 100%; 
             max-width: 350px; 
         }
-        /* Letras Bienvenido en NARANJA */
+        /* Bienvenido en NARANJA solicitado */
         h1 { 
             color: #FF5000; 
             font-size: 35px; 
@@ -42,8 +42,14 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             transition: all 0.2s;
         }
-        .btn-google:hover { background-color: #f8f9fa; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .btn-google img { width: 18px; margin-right: 12px; }
+        .btn-google:hover { 
+            background-color: #f8f9fa; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+        .btn-google img { 
+            width: 18px; 
+            margin-right: 12px; 
+        }
     </style>
 </head>
 <body>
@@ -51,7 +57,7 @@
     <div class="login-card">
         <h1>¡Bienvenido!</h1>
         <button class="btn-google" onclick="window.login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
             Entrar con Google
         </button>
     </div>
@@ -60,6 +66,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+        // Configuración de tu proyecto
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
             authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
@@ -78,17 +85,14 @@
                 .then((result) => {
                     console.log("Login exitoso");
                     
-                    // SOLUCIÓN AL ERROR 404: 
-                    // Si estamos en GitHub, usamos la ruta con la subcarpeta
-                    if (window.location.hostname.includes("github.io")) {
-                        window.location.href = "/abastible-linares/pedidos.html";
-                    } else {
-                        window.location.href = "pedidos.html";
-                    }
+                    // SOLUCIÓN DEFINITIVA AL ERROR 404:
+                    // Usamos una ruta relativa directa. Esto funciona tanto en PC como en GitHub Pages
+                    // sin importar el nombre de la subcarpeta.
+                    window.location.assign("pedidos.html");
                 })
                 .catch((error) => {
                     console.error("Error:", error.code);
-                    alert("Error al ingresar: " + error.message);
+                    alert("Error al ingresar: " + error.code);
                 });
         };
     </script>
