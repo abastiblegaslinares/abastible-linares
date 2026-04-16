@@ -75,9 +75,12 @@
                 .then((result) => {
                     // SOLUCIÓN TOTALMENTE EFECTIVA: Ruta absoluta
                     // Esto fuerza al navegador a ir a la URL exacta de tu repositorio
-                    window.location.href = "https://abastiblegaslinares.github.io/abastible-linares/pedidos.html";
+                    const targetPage = "https://abastiblegaslinares.github.io/abastible-linares/pedidos.html";
+                    console.log("Redirigiendo a:", targetPage);
+                    window.location.href = targetPage;
                 })
                 .catch((error) => {
+                    console.error("Error de Firebase:", error.code);
                     alert("Error: " + error.message);
                 });
         };
