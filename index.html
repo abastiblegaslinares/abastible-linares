@@ -3,17 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abastible Linares</title>
+    <title>Abastible Linares - Acceso</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-card { text-align: center; width: 100%; max-width: 320px; }
-        /* Bienvenido en NARANJA */
-        h1 { color: #FF5000; font-size: 32px; margin-bottom: 40px; font-weight: bold; }
-        .btn-google { 
-            background-color: white; border: 1px solid #dadce0; color: #3c4043; padding: 12px 24px; 
-            border-radius: 4px; font-size: 16px; font-weight: 500; cursor: pointer; 
-            display: inline-flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background-color: #ffffff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
         }
+        .login-card { text-align: center; width: 100%; max-width: 320px; }
+        
+        /* Estilo solicitado: Letras naranjas y sin logos adicionales */
+        h1 { 
+            color: #FF5000; 
+            font-size: 32px; 
+            margin-bottom: 40px; 
+            font-weight: bold; 
+        }
+
+        .btn-google { 
+            background-color: white; 
+            border: 1px solid #dadce0; 
+            color: #3c4043; 
+            padding: 12px 24px; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+        .btn-google:hover { background-color: #f8f9fa; }
         .btn-google img { width: 18px; margin-right: 10px; }
     </style>
 </head>
@@ -21,15 +46,16 @@
 
     <div class="login-card">
         <h1>¡Bienvenido!</h1>
-        <button class="btn-google" onclick="window.login()">
+        <button class="btn-google" id="login-button">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
             Entrar con Google
         </button>
     </div>
 
     <script type="module">
+        // Importamos exactamente las mismas librerías que en pedidos.html
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
@@ -44,20 +70,23 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        window.login = function() {
-            signInWithPopup(auth, provider)
+        document.getElementById('login-button').addEventListener('click', () => {
+            // 1. Establecemos la persistencia para que el navegador "recuerde" al usuario
+            setPersistence(auth, browserLocalPersistence)
+                .then(() => {
+                    // 2. Iniciamos el popup de Google
+                    return signInWithPopup(auth, provider);
+                })
                 .then((result) => {
-                    // SOLUCIÓN DEFINITIVA: 
-                    // En lugar de una ruta relativa que GitHub bloquea, 
-                    // usamos la URL absoluta con un preventor de caché.
-                    const finalUrl = "https://abastiblegaslinares.github.io/abastible-linares/pedidos.html";
-                    window.location.replace(finalUrl);
+                    console.log("Acceso exitoso");
+                    // 3. Redirigimos a pedidos.html (ruta relativa)
+                    window.location.href = "pedidos.html";
                 })
                 .catch((error) => {
                     console.error("Error:", error.code);
-                    alert("Error: " + error.message);
+                    alert("Error al ingresar: " + error.message);
                 });
-        };
+        });
     </script>
 </body>
 </html>
