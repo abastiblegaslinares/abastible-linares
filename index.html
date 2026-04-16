@@ -3,81 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abastible Linares - Cloud Control</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
+    <title>Abastible Linares - Control de Pedidos</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
-        body { font-family: 'Ubuntu', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
-        .nav-active { color: #ea580c; background-color: rgba(234, 88, 12, 0.05); border-radius: 1rem; }
-        .modal-animate { animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        :root { --naranja: #ffcc00; --azul: #003399; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 350px; border-top: 8px solid var(--naranja); }
+        .logo-placeholder { background: var(--azul); color: white; width: 80px; height: 80px; line-height: 80px; border-radius: 50%; margin: 0 auto 20px; font-weight: bold; font-size: 12px; }
+        h1 { color: var(--azul); font-size: 24px; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
+        .btn-google { background-color: white; border: 1px solid #dadce0; color: #3c4043; padding: 12px 20px; border-radius: 4px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; transition: background-color .2s; }
+        .btn-google:hover { background-color: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .btn-google img { width: 18px; margin-right: 10px; }
     </style>
 </head>
-<body class="antialiased text-slate-900 pb-20">
+<body>
 
-    <div id="auth-screen" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center">
-        <div class="bg-[#ea580c] w-20 h-20 rounded-[2rem] mb-6 flex items-center justify-center text-4xl shadow-2xl shadow-orange-200 text-white font-black italic">A</div>
-        <h1 class="text-3xl font-black text-slate-800">Abastible Linares</h1>
-        <p class="text-slate-500 mt-2 mb-8 max-w-xs">Acceso seguro a tu base de datos comercial.</p>
-        <button id="login-btn" onclick="login()" class="flex items-center gap-4 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all active:scale-95 shadow-xl">
-            <span>Entrar con Google</span>
+    <div class="login-card">
+        <div class="logo-placeholder">ABASTIBLE</div>
+        <h1>¡Bienvenido!</h1>
+        <p>Acceso al Sistema de Control de Pedidos Linares</p>
+        
+        <button class="btn-google" onclick="window.login()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            Entrar con Google
         </button>
-    </div>
-
-    <header class="bg-white border-b border-slate-200 p-4 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div>
-                <h2 class="text-lg font-black text-[#ea580c] tracking-tighter italic">LINARES CONTROL</h2>
-                <div id="sync-status" class="text-[9px] font-bold text-green-500 flex items-center gap-1 uppercase">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Sincronizado
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="openModal('newSale')" class="bg-[#ea580c] text-white h-10 w-10 rounded-xl flex items-center justify-center text-xl font-bold shadow-lg shadow-orange-100">+</button>
-                <img id="user-photo" src="" class="w-10 h-10 rounded-full border-2 border-orange-100 hidden">
-            </div>
-        </div>
-    </header>
-
-    <main id="app-main" class="max-w-7xl mx-auto p-4 hidden">
-        </main>
-
-    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-2 z-40 hidden">
-        <div class="max-w-md mx-auto flex justify-around">
-            <button onclick="navigate('despacho')" id="nav-despacho" class="flex flex-col items-center p-2 transition-all">
-                <span class="text-xl">&#128666;</span>
-                <span class="text-[9px] font-bold uppercase mt-1">Despacho</span>
-            </button>
-            <button onclick="navigate('agenda')" id="nav-agenda" class="flex flex-col items-center p-2 transition-all">
-                <span class="text-xl">&#128197;</span>
-                <span class="text-[9px] font-bold uppercase mt-1 text-center">Agenda</span>
-            </button>
-            <button onclick="navigate('gestion')" id="nav-gestion" class="flex flex-col items-center p-2 transition-all">
-                <span class="text-xl">&#9881;</span>
-                <span class="text-[9px] font-bold uppercase mt-1">Gestión</span>
-            </button>
-        </div>
-    </nav>
-
-    <div id="modal-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden flex items-end sm:items-center justify-center">
-        <div id="modal-content" class="bg-white w-full max-w-lg rounded-t-[2.5rem] sm:rounded-[2.5rem] p-8 modal-animate">
-            </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // --- CREDENCIALES ---
+
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
             authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
             projectId: "control-de-pedidos-71c6b",
-            storageBucket: "control-de-pedidos-71c6b.firebasestorage.app",
+            storageBucket: "control-de-pedidos-71c6b.appspot.com",
             messagingSenderId: "367280386762",
             appId: "1:367280386762:web:a6f7b764d0d0c3a2f3f9f3"
         };
@@ -86,149 +46,21 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // --- MANEJO DE SESIÓN AUTOMÁTICO ---
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('app-main').classList.remove('hidden');
-                document.getElementById('bottom-nav').classList.remove('hidden');
-                
-                const photo = document.getElementById('user-photo');
-                photo.src = user.photoURL;
-                photo.classList.remove('hidden');
-                
-                navigate('despacho');
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-            }
-        });
-
-        // Inicio de sesión por Redirección (Mejor para Hosting)
-        <button onclick="window.login()>Entrar con Google</button>
-            window.login = function() {
-                console.log("Iniciando sesión...");
-                signInWithPopup(auth, provider)
-                    .then((result) => {
-                        console.log("¡Éxito!", result.user.displayname)
-                        alert("Bienvenido " + result.user.displayName);
-                        window.location.href = "pedidos.html";
-                    })
-                    .catch((error) => {
-                        console.error("Error al entrar:", error.code);
-                        alert("Error: " + error.message);
-                    });
-        }
-        </script>
-
-        // --- NAVEGACIÓN ---
-        function navigate(tab) {
-            const main = document.getElementById('app-main');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
-            document.getElementById(`nav-${tab}`).classList.add('nav-active');
-
-            if(tab === 'despacho') renderDespacho(main);
-            if(tab === 'agenda') renderAgenda(main);
-            if(tab === 'gestion') renderGestion(main);
-        }
-
-        function renderDespacho(container) {
-            container.innerHTML = `
-                <div class="space-y-6">
-                    <div class="bg-slate-900 text-white p-6 rounded-[2rem] shadow-xl">
-                        <p class="text-xs font-bold text-orange-400 uppercase tracking-widest">Estado Semanal</p>
-                        <h3 class="text-2xl font-black mt-1">Maule Region</h3>
-                        <div class="mt-4 flex justify-between border-t border-slate-700 pt-4">
-                            <div><p class="text-[10px] text-slate-400 font-bold uppercase">Ingresos</p><p class="text-xl font-bold">$450.000</p></div>
-                            <div class="text-right"><p class="text-[10px] text-slate-400 font-bold uppercase">Cilindros</p><p class="text-xl font-bold">18 u.</p></div>
-                        </div>
-                    </div>
-                    <div class="grid gap-4">
-                        <div class="bg-white p-5 rounded-[2rem] border-l-8 border-[#ea580c] shadow-sm flex items-center justify-between">
-                            <div><h4 class="font-bold">Gas San Clemente</h4><p class="text-xs text-slate-400 italic">4x 15kg habitual</p></div>
-                            <button onclick="sendWhatsApp('Gas San Clemente')" class="bg-green-100 text-green-600 p-4 rounded-2xl text-xl">&#128242;</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAgenda(container) {
-            container.innerHTML = `
-                <div class="space-y-6">
-                    <h2 class="text-2xl font-black">Registro en Nube</h2>
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm text-center">
-                        <p class="text-slate-400 py-10 italic">Consultando Firestore Database...</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderGestion(container) {
-            container.innerHTML = `
-                <div class="space-y-6">
-                    <h2 class="text-2xl font-black">Cuenta</h2>
-                    <div class="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-4">
-                        <button onclick="auth.signOut().then(() => location.reload())" class="w-full bg-slate-100 text-red-500 py-4 rounded-2xl font-bold">Cerrar Sesión</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openModal(type) {
-            const overlay = document.getElementById('modal-overlay');
-            const content = document.getElementById('modal-content');
-            overlay.classList.remove('hidden');
-            if(type === 'newSale') {
-                content.innerHTML = `
-                    <div class="space-y-6">
-                        <div class="flex justify-between items-center">
-                            <h2 class="text-2xl font-black text-slate-800">Nueva Venta</h2>
-                            <button onclick="closeModal()" class="text-slate-400 text-3xl font-light">&times;</button>
-                        </div>
-                        <div class="bg-slate-50 p-8 rounded-[2rem] text-center shadow-inner">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-4">Unidades</p>
-                            <div class="flex justify-around items-center">
-                                <button class="text-4xl text-slate-300" onclick="updateQty(-1)">-</button>
-                                <span id="modal-qty" class="text-7xl font-black text-[#ea580c]">1</span>
-                                <button class="text-4xl text-slate-300" onclick="updateQty(1)">+</button>
-                            </div>
-                        </div>
-                        <select id="gas-type" class="w-full bg-slate-100 p-4 rounded-2xl font-bold border-none outline-none">
-                            <option>5 Kg.</option><option>11 Kg.</option><option selected>15 Kg.</option><option>45 Kg.</option><option>15 VMA</option>
-                        </select>
-                        <button onclick="confirmarVenta()" class="w-full bg-[#ea580c] text-white py-5 rounded-[2rem] font-bold text-lg shadow-xl shadow-orange-100 active:scale-95 transition-all">Sincronizar Pedido</button>
-                    </div>
-                `;
-                currentQty = 1;
-            }
-        }
-
-        function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
-
-        function updateQty(val) {
-            currentQty = Math.max(1, currentQty + val);
-            document.getElementById('modal-qty').innerText = currentQty;
-        }
-
-        function confirmarVenta() {
-            const tipo = document.getElementById('gas-type').value;
-            db.collection("ventas").add({
-                usuario: currentUser.displayName,
-                cantidad: currentQty,
-                formato: tipo,
-                fecha: new Date().toISOString(),
-                ubicacion: "Linares"
-            }).then(() => {
-                alert("Guardado en Google Cloud ✅");
-                closeModal();
-            }).catch(err => alert("Error: " + err.message));
-        }
-
-        function sendWhatsApp(client) {
-            const msg = `Hola ${client}, Abastible Linares confirma su despacho habitual.`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
-        }
+        window.login = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("Acceso concedido:", result.user.displayName);
+                    window.location.href = "pedidos.html";
+                })
+                .catch((error) => {
+                    console.error("Error:", error.code);
+                    if (error.code === 'auth/unauthorized-domain') {
+                        alert("Error: El dominio no está autorizado en Firebase. Verifica la consola de Firebase.");
+                    } else {
+                        alert("Error de inicio de sesión: " + error.message);
+                    }
+                });
+        };
     </script>
 </body>
 </html>
