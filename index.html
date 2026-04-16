@@ -82,8 +82,8 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
 
         let currentUser = null;
         let currentQty = 1;
@@ -108,7 +108,13 @@
 
         // Inicio de sesión por Redirección (Mejor para Hosting)
         function login() {
-            auth.signInWithPopup(auth, provider);
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("Ingreso exitoso");
+                })
+                .catch((error) => {
+                    console.error("Error al entrar:", error.message);
+                });
         }
 
         // --- NAVEGACIÓN ---
