@@ -105,18 +105,19 @@
         });
 
         // Inicio de sesión por Redirección (Mejor para Hosting)
-        window.login = function() {
-            console.log("Iniciando sesión...");
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log("¡Éxito!", result.user.displayname)
-                    alert("Bienvenido " + result.user.displayName);
-                    window.location.href = "pedidos.html";
-                })
-                .catch((error) => {
-                    console.error("Error al entrar:", error.code);
-                    alert("Error: " + error.message);
-                });
+        <button onclick="window.login()>Entrar con Google</button>
+            window.login = function() {
+                console.log("Iniciando sesión...");
+                signInWithPopup(auth, provider)
+                    .then((result) => {
+                        console.log("¡Éxito!", result.user.displayname)
+                        alert("Bienvenido " + result.user.displayName);
+                        window.location.href = "pedidos.html";
+                    })
+                    .catch((error) => {
+                        console.error("Error al entrar:", error.code);
+                        alert("Error: " + error.message);
+                    });
         }
         </script>
 
