@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos - Abastible Linares</title>
+    <style>
+        :root { --naranja: #FF5000; --azul: #003399; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
+        
+        /* Barra de navegación */
+        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-text { color: var(--azul); font-weight: bold; font-size: 20px; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .btn-logout { background: #eee; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .btn-logout:hover { background: #ddd; }
+
+        /* Contenedor principal */
+        .main-container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        h2 { color: var(--naranja); border-bottom: 2px solid var(--naranja); padding-bottom: 10px; }
+        
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        /* Formulario simple de ejemplo */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        .btn-submit { background: var(--naranja); color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; }
+        .btn-submit:hover { background: #e64500; }
+        
+        #loader { text-align: center; margin-top: 100px; font-size: 18px; color: var(--azul); }
+    </style>
+</head>
+<body>
+
+    <div id="loader">Verificando acceso...</div>
