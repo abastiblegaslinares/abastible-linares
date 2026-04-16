@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abastible Linares - Acceso</title>
+    <title>Abastible Linares</title>
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Segoe UI', sans-serif; 
             margin: 0; 
             background-color: #ffffff; 
             display: flex; 
@@ -18,15 +18,14 @@
             text-align: center; 
             padding: 40px; 
             width: 100%; 
-            max-width: 350px; 
+            max-width: 320px; 
         }
-        /* Bienvenido en NARANJA solicitado */
+        /* Letras en NARANJA solicitado */
         h1 { 
             color: #FF5000; 
-            font-size: 35px; 
+            font-size: 32px; 
             margin-bottom: 40px; 
             font-weight: bold; 
-            letter-spacing: -1px;
         }
         .btn-google { 
             background-color: white; 
@@ -39,17 +38,9 @@
             cursor: pointer; 
             display: inline-flex; 
             align-items: center; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .btn-google:hover { 
-            background-color: #f8f9fa; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-        }
-        .btn-google img { 
-            width: 18px; 
-            margin-right: 12px; 
-        }
+        .btn-google img { width: 18px; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -57,7 +48,7 @@
     <div class="login-card">
         <h1>¡Bienvenido!</h1>
         <button class="btn-google" onclick="window.login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
             Entrar con Google
         </button>
     </div>
@@ -66,7 +57,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Configuración de tu proyecto
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
             authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
@@ -83,16 +73,12 @@
         window.login = function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    console.log("Login exitoso");
-                    
-                    // SOLUCIÓN DEFINITIVA AL ERROR 404:
-                    // Usamos una ruta relativa directa. Esto funciona tanto en PC como en GitHub Pages
-                    // sin importar el nombre de la subcarpeta.
-                    window.location.assign("pedidos.html");
+                    // SOLUCIÓN TOTALMENTE EFECTIVA: Ruta absoluta
+                    // Esto fuerza al navegador a ir a la URL exacta de tu repositorio
+                    window.location.href = "https://abastiblegaslinares.github.io/abastible-linares/pedidos.html";
                 })
                 .catch((error) => {
-                    console.error("Error:", error.code);
-                    alert("Error al ingresar: " + error.code);
+                    alert("Error: " + error.message);
                 });
         };
     </script>
