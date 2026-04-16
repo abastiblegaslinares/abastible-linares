@@ -23,7 +23,9 @@
             width: 100%; 
             max-width: 320px; 
         }
-        h1 { color: #003399; font-size: 28px; margin-bottom: 30px; }
+        /* Letras de Bienvenido en color naranja */
+        h1 { color: #ffcc00; font-size: 28px; margin-bottom: 30px; font-weight: bold; }
+        
         .btn-google { 
             background-color: white; 
             border: 1px solid #dadce0; 
@@ -57,7 +59,8 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
-            authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
+            // TRUCO FINAL: Cambiamos firebaseapp.com por web.app que es más compatible con GitHub
+            authDomain: "control-de-pedidos-71c6b.web.app", 
             projectId: "control-de-pedidos-71c6b",
             storageBucket: "control-de-pedidos-71c6b.appspot.com",
             messagingSenderId: "367280386762",
@@ -74,9 +77,9 @@
                     window.location.href = "pedidos.html";
                 })
                 .catch((error) => {
-                    console.error("Error Code:", error.code);
+                    console.error("Código de error:", error.code);
                     if (error.code === 'auth/unauthorized-domain') {
-                        alert("ERROR CRÍTICO: El dominio todavía no es reconocido por Firebase. Asegúrate de que 'abastiblegaslinares.github.io' esté en la lista de Dominios Autorizados en la consola de Firebase.");
+                        alert("ERROR DE DOMINIO: Google aún no autoriza este link. Por favor, asegúrate de que 'abastiblegaslinares.github.io' esté guardado en la consola de Firebase sin espacios ni https.");
                     } else {
                         alert("Error: " + error.message);
                     }
