@@ -5,40 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abastible Linares</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            background-color: #ffffff; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-        }
-        .login-card { 
-            text-align: center; 
-            padding: 40px; 
-            width: 100%; 
-            max-width: 320px; 
-        }
-        /* Letras en NARANJA solicitado */
-        h1 { 
-            color: #FF5000; 
-            font-size: 32px; 
-            margin-bottom: 40px; 
-            font-weight: bold; 
-        }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-card { text-align: center; width: 100%; max-width: 320px; }
+        /* Bienvenido en NARANJA */
+        h1 { color: #FF5000; font-size: 32px; margin-bottom: 40px; font-weight: bold; }
         .btn-google { 
-            background-color: white; 
-            border: 1px solid #dadce0; 
-            color: #3c4043; 
-            padding: 12px 24px; 
-            border-radius: 4px; 
-            font-size: 16px; 
-            font-weight: 500; 
-            cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background-color: white; border: 1px solid #dadce0; color: #3c4043; padding: 12px 24px; 
+            border-radius: 4px; font-size: 16px; font-weight: 500; cursor: pointer; 
+            display: inline-flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .btn-google img { width: 18px; margin-right: 10px; }
     </style>
@@ -73,14 +47,14 @@
         window.login = function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    // SOLUCIÓN TOTALMENTE EFECTIVA: Ruta absoluta
-                    // Esto fuerza al navegador a ir a la URL exacta de tu repositorio
-                    const targetPage = "https://abastiblegaslinares.github.io/abastible-linares/pedidos.html";
-                    console.log("Redirigiendo a:", targetPage);
-                    window.location.href = targetPage;
+                    // SOLUCIÓN DEFINITIVA: 
+                    // En lugar de una ruta relativa que GitHub bloquea, 
+                    // usamos la URL absoluta con un preventor de caché.
+                    const finalUrl = "https://abastiblegaslinares.github.io/abastible-linares/pedidos.html";
+                    window.location.replace(finalUrl);
                 })
                 .catch((error) => {
-                    console.error("Error de Firebase:", error.code);
+                    console.error("Error:", error.code);
                     alert("Error: " + error.message);
                 });
         };
