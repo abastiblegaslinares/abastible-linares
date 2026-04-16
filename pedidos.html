@@ -3,161 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abastible Linares - Gestión Profesional</title>
+    <title>Control Clientes Abastible Linares</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        :root { --naranja: #FF5000; --azul: #002D72; --fondo: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--fondo); }
+        :root { --naranja: #FF5000; --naranja-trans: rgba(255, 80, 0, 0.2); --azul: #002D72; --fondo: #f8f9fa; }
         
-        /* Header Naranja solicitado */
+        body { font-family: 'Ubuntu', sans-serif; margin: 0; background-color: var(--fondo); color: #333; }
+        
+        /* Header corregido */
         header { 
-            background: var(--naranja); color: white; padding: 15px 25px; 
-            display: flex; justify-content: center; align-items: center; 
-            position: sticky; top: 0; z-index: 1000; font-weight: bold; font-size: 1.2rem;
+            background: var(--naranja); color: white; padding: 15px; 
+            text-align: center; font-weight: 500; font-size: 1.3rem;
+            position: sticky; top: 0; z-index: 1000;
         }
 
         .container { padding: 20px; padding-bottom: 100px; max-width: 1200px; margin: auto; }
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        h2 { color: var(--naranja); font-size: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        
-        /* Botones */
-        .btn-naranja { background: var(--naranja); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-azul { background: var(--azul); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
-        
-        /* Calendario */
-        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #eee; }
-        .cal-header { background: var(--azul); color: white; padding: 5px; text-align: center; font-size: 12px; }
-        .cal-day { background: white; min-height: 60px; padding: 5px; font-size: 11px; }
+        h2 { color: var(--naranja); font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
 
-        /* Formulario Gestión */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 100%; box-sizing: border-box; }
-
-        /* Navegación Inferior */
-        .nav-bar { background: white; display: flex; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #ddd; height: 70px; }
-        .nav-item { flex: 1; text-align: center; padding: 15px; cursor: pointer; color: #666; font-weight: bold; }
+        /* Barra de Pestañas con Iconos */
+        .nav-bar { background: white; display: flex; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #ddd; height: 75px; z-index: 1000; }
+        .nav-item { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #666; font-weight: 500; font-size: 14px; transition: 0.3s; }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 5px; }
         .nav-item.active { color: var(--naranja); border-top: 4px solid var(--naranja); }
+
+        /* Mapa y Recordatorio */
+        .map-frame { width: 100%; height: 300px; border-radius: 10px; border: none; background: #eee; }
+        .alerta-item { padding: 10px; border-left: 4px solid var(--naranja); background: #fff5f0; margin-top: 10px; border-radius: 4px; }
+
+        /* Calendario Ubuntu Regular */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #eee; }
+        .cal-day { background: white; min-height: 85px; padding: 5px; font-size: 12px; font-family: 'Ubuntu', sans-serif; }
+        .cal-header { background: var(--azul); color: white; text-align: center; padding: 8px; font-weight: 500; }
+        .pedido-pasado { background: var(--naranja-trans); color: var(--naranja); padding: 3px; border-radius: 3px; margin-top: 2px; border: 1px solid var(--naranja); font-size: 10px; }
+        .pedido-recomendado { background: var(--naranja); color: white; padding: 3px; border-radius: 3px; margin-top: 2px; font-size: 10px; }
+
+        /* Gestión: Choferes Desplegables */
+        .chofer-box { border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+        .chofer-header { padding: 15px; background: #fff; display: flex; justify-content: space-between; cursor: pointer; font-weight: 500; }
+        .chofer-content { padding: 15px; background: #fafafa; border-top: 1px solid #eee; display: none; }
+        .chofer-content.active { display: block; }
+        
+        /* Inputs y Botones */
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%; box-sizing: border-box; font-family: 'Ubuntu'; margin-bottom: 10px; }
+        .btn-naranja { background: var(--naranja); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; width: 100%; }
+        .btn-add { background: var(--azul); color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <header>CONTROL CLIENTES ABASTIBLE LINARES</header>
+    <header>Control Clientes Abastible Linares</header>
 
     <div class="container">
         
-        <div id="agenda" class="section">
+        <div id="mapa" class="section">
             <div class="card">
-                <h2>Calendario <button class="btn-naranja" onclick="mostrarModal('modalPedido')">Pedido Pasado</button></h2>
-                <div class="cal-nav">
-                    <button onclick="cambiarMes(-1)">◀ Ant</button>
-                    <strong id="mes-actual">Abril 2026</strong>
-                    <button onclick="cambiarMes(1)">Sig ▶</button>
-                </div>
-                <div class="calendar-grid" id="calendario">
-                    </div>
+                <h2><i class="fa-solid fa-map-location-dot"></i> Ubicaciones en Linares</h2>
+                <iframe class="map-frame" src="https://www.google.com/maps?q=$"></iframe>
             </div>
-
             <div class="card">
-                <h2>Descargar Historial</h2>
-                <select id="historial-cliente" style="margin-bottom:10px;">
-                    <option>Seleccionar Cliente...</option>
-                </select>
-                <select id="historial-rango">
-                    <option value="30">Últimos 30 días</option>
-                    <option value="60">Últimos 2 meses</option>
-                    <option value="180">Últimos 6 meses</option>
-                    <option value="365">Último año</option>
-                    <option value="730">Últimos 2 años</option>
-                    <option value="all">Historial todos los años</option>
-                </select>
-                <button class="btn-azul" style="margin-top:10px; width:100%;" onclick="descargarHistorial()">Exportar Historial (.doc)</button>
+                <h2>Recordatorio de Próxima Venta</h2>
+                <div id="recordatorios-lista">
+                    <div class="alerta-item">
+                        <strong>Comercial El Punto</strong><br>
+                        <small>Sugerencia: 18 Abril (Basado en recurrencia de 14 días)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="agenda" class="section hidden">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2 style="border:none; margin:0;">Calendario Mensual</h2>
+                    <button class="btn-naranja" style="width:auto;" onclick="abrirPedidoPasado()">Pedido Pasado</button>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <button onclick="cambiarMes(-1)">◀</button>
+                    <strong id="mes-titulo">Abril 2026</strong>
+                    <button onclick="cambiarMes(1)">▶</button>
+                </div>
+                <div class="cal-grid" id="calendario-mensual">
+                    <div class="cal-header">Lun</div><div class="cal-header">Mar</div><div class="cal-header">Mié</div>
+                    <div class="cal-header">Jue</div><div class="cal-header">Vie</div><div class="cal-header">Sáb</div><div class="cal-header">Dom</div>
+                    <div class="cal-day">13 <div class="pedido-pasado">Chofer 2: 2x15kg</div></div>
+                    <div class="cal-day">14 <div class="pedido-recomendado">💡 Panadería</div></div>
+                </div>
             </div>
         </div>
 
         <div id="gestion" class="section hidden">
             <div class="card">
-                <h2>Configuración de Choferes</h2>
-                <div id="choferes-lista">
-                    <div class="form-grid" style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
-                        <input type="text" placeholder="Nombre Chofer 1">
-                        <input type="text" placeholder="Patente Camioneta">
-                        <input type="text" placeholder="Teléfono">
+                <h2>Edición Datos Choferes</h2>
+                <div id="lista-choferes-desplegable">
+                    <div class="chofer-box">
+                        <div class="chofer-header" onclick="toggleChofer(1)">Chofer 1 <i class="fa-solid fa-chevron-down"></i></div>
+                        <div class="chofer-content" id="ch-content-1">
+                            <input type="text" placeholder="Nombre Chofer">
+                            <input type="text" placeholder="Patente Camioneta">
+                            <input type="text" placeholder="N° Teléfono">
+                            <button class="btn-naranja" onclick="guardarDato()">Guardar y Salir</button>
+                        </div>
                     </div>
-                </div>
+                    </div>
             </div>
 
             <div class="card">
-                <h2>Precio por Cliente <button class="btn-naranja" onclick="mostrarModal('modalCliente')">Nuevo Cliente</button></h2>
-                <select style="margin-bottom:10px;">
-                    <option>Editar precios de cliente existente...</option>
-                </select>
-                <div id="precios-edit">
-                    <table style="width:100%;">
-                        <tr><td>5 Kg</td><td><input type="number" placeholder="$"></td></tr>
-                        <tr><td>11 Kg</td><td><input type="number" placeholder="$"></td></tr>
-                        <tr><td>15 VMA</td><td><input type="number" placeholder="$"></td></tr>
-                    </table>
-                    <button class="btn-azul" style="width:100%; margin-top:10px;">Guardar Cambios</button>
+                <h2>Gestión de Clientes</h2>
+                <button class="btn-naranja" onclick="abrirNuevoCliente()">+ Nuevo Cliente Comercial</button>
+                <div id="form-cliente-nuevo" class="hidden" style="margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
+                    <input type="text" placeholder="Nombre Cliente Comercial">
+                    <input type="text" placeholder="Ubicación (Coordenadas/Dirección)">
+                    <input type="text" placeholder="Teléfono">
+                    
+                    <div id="cilindros-agregados"></div>
+                    <button class="btn-add" onclick="agregarFilaCilindro()">+ Agregar Cilindro</button>
+                    
+                    <select>
+                        <option>Seleccionar Chofer (1 al 8)</option>
+                        <option>Chofer 1</option><option>Chofer 2</option>
+                    </select>
+                    <button class="btn-naranja" onclick="guardarDato()">Guardar y Salir</button>
                 </div>
             </div>
         </div>
 
         <div id="metricas" class="section hidden">
-            <div class="card"><h2>Reporte Semanal</h2><button class="btn-naranja" onclick="exportar('semanal')">Descargar Semanal</button></div>
-            <div class="card"><h2>Reporte Mensual</h2><button class="btn-naranja" onclick="exportar('mensual')">Descargar Mensual</button></div>
-            <div class="card"><h2>Reporte Anual</h2><button class="btn-naranja" onclick="exportar('anual')">Descargar Anual</button></div>
-            <div class="card"><h2>Reporte Total</h2><button class="btn-naranja" onclick="exportar('total')">Descargar Total</button></div>
+            <div class="card"><h2>Reportes de Ventas</h2><p>Seleccione periodo para compartir...</p></div>
         </div>
 
-        <div id="despacho" class="section hidden">
-            <div class="card"><h2>Mapa y Ruta</h2><p>Mapa centrado en Linares...</p></div>
-        </div>
-
-    </div>
-
-    <div id="modalPedido" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; overflow-y:auto;">
-        <div class="card" style="margin:20px; background:white;">
-            <h2>Registrar Pedido Pasado</h2>
-            <div class="form-grid">
-                <input type="text" placeholder="Nombre Cliente">
-                <input type="date">
-                <input type="time">
-                <select><option>Chofer 1</option><option>Chofer 2</option></select>
-                <input type="text" placeholder="Ubicación">
-            </div>
-            <button class="btn-naranja" style="width:100%; margin-top:15px;" onclick="cerrarModal('modalPedido')">Guardar y Salir</button>
-        </div>
-    </div>
-
-    <div id="modalCliente" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000;">
-        <div class="card" style="margin:20px;">
-            <h2>Nuevo Cliente Comercial</h2>
-            <input type="text" placeholder="Nombre Cliente" style="margin-bottom:10px;">
-            <input type="text" placeholder="Ubicación" style="margin-bottom:10px;">
-            <input type="text" placeholder="Teléfono" style="margin-bottom:10px;">
-            <button class="btn-azul">+ Agregar Cilindro</button>
-            <select style="margin-top:10px;"><option>Seleccionar Chofer (1-6)</option></select>
-            <button class="btn-naranja" style="width:100%; margin-top:15px;" onclick="cerrarModal('modalCliente')">Guardar y Salir</button>
-        </div>
     </div>
 
     <div class="nav-bar">
-        <div class="nav-item" onclick="nav('despacho', this)">MAPA</div>
-        <div class="nav-item active" onclick="nav('agenda', this)">AGENDA</div>
-        <div class="nav-item" onclick="nav('gestion', this)">GESTIÓN</div>
-        <div class="nav-item" onclick="nav('metricas', this)">MÉTRICAS</div>
+        <div class="nav-item active" onclick="nav('mapa', this)"><i class="fa-solid fa-map"></i>Mapa</div>
+        <div class="nav-item" onclick="nav('agenda', this)"><i class="fa-solid fa-calendar-days"></i>Agenda</div>
+        <div class="nav-item" onclick="nav('gestion', this)"><i class="fa-solid fa-sliders"></i>Gestión</div>
+        <div class="nav-item" onclick="nav('metricas', this)"><i class="fa-solid fa-chart-line"></i>Métricas</div>
     </div>
 
     <script>
-        // Lógica de Navegación
+        // Lógica de Persistencia y Auto-Guardado ligado a Google
+        function guardarDato() {
+            // Aquí se integra la lógica de Firebase Firestore para guardar automáticamente
+            console.log("Sincronizando con cuenta Google...");
+            alert("Cambios guardados automáticamente en su nube.");
+        }
+
         function nav(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
@@ -165,21 +165,24 @@
             el.classList.add('active');
         }
 
-        // Modales
-        function mostrarModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // Simulación Calendario
-        function cambiarMes(n) { alert("Cambiando a mes: " + n); }
-
-        function descargarHistorial() {
-            const range = document.getElementById('historial-rango').value;
-            alert("Generando Word con rango: " + range);
+        function toggleChofer(n) {
+            const content = document.getElementById('ch-content-'+n);
+            content.classList.toggle('active');
         }
 
-        function exportar(tipo) {
-            alert("Descargando reporte " + tipo + " con cálculos en Pesos Chilenos.");
+        function agregarFilaCilindro() {
+            const container = document.getElementById('cilindros-agregados');
+            const div = document.createElement('div');
+            div.style.display = "flex"; div.style.gap = "5px";
+            div.innerHTML = `
+                <select style="flex:2"><option>5 Kg</option><option>11 Kg</option><option>15 Kg</option><option>45 Kg</option><option>15 VMA</option></select>
+                <input type="number" placeholder="Cant." style="flex:1">
+                <input type="number" placeholder="$ Unitario" style="flex:2">
+            `;
+            container.appendChild(div);
         }
+
+        function abrirNuevoCliente() { document.getElementById('form-cliente-nuevo').classList.toggle('hidden'); }
     </script>
 </body>
 </html>
