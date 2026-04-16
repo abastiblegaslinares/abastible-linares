@@ -7,111 +7,143 @@
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        :root { --naranja: #FF5000; --azul: #002D72; --gris-fondo: #f8f9fa; }
+        :root { --naranja: #FF5000; --azul: #002D72; --verde: #25D366; --fondo: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--fondo); color: #333; }
         
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--gris-fondo); color: #333; }
-
-        /* HEADER & VENTAS RÁPIDAS */
+        /* Header y Botón Flotante (+) */
         header { 
-            background: var(--azul); 
-            color: white; 
-            padding: 10px 25px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            background: var(--azul); color: white; padding: 12px 25px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 1000; 
+        }
+        .btn-plus { 
+            background: var(--naranja); color: white; border: none; 
+            width: 50px; height: 50px; border-radius: 50%; 
+            font-size: 28px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .btn-venta-rapida { 
-            background: var(--naranja); 
-            color: white; 
-            border: none; 
-            width: 45px; height: 45px; 
-            border-radius: 50%; 
-            font-size: 24px; font-weight: bold; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: 0.2s;
+        /* Navegación Inferior Estilo App */
+        .nav-bar { 
+            background: white; display: flex; justify-content: space-around; 
+            border-top: 1px solid #ddd; position: fixed; bottom: 0; width: 100%; height: 65px;
         }
-        .btn-venta-rapida:hover { transform: scale(1.1); }
+        .nav-item { 
+            flex: 1; text-align: center; padding: 12px; cursor: pointer; 
+            font-weight: bold; color: #666; font-size: 13px;
+        }
+        .nav-item.active { color: var(--naranja); border-top: 3px solid var(--naranja); }
 
-        /* NAVEGACIÓN (TABS) */
-        .nav-tabs { 
-            background: white; 
-            display: flex; 
-            justify-content: center; 
-            border-bottom: 1px solid #ddd;
-        }
-        .tab { 
-            padding: 15px 25px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            color: #666; 
-            transition: 0.3s;
-        }
-        .tab.active { 
-            color: var(--naranja); 
-            border-bottom: 3px solid var(--naranja); 
-        }
-
-        /* ÁREA DE CONTENIDO */
-        .main-content { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        /* Contenedores */
+        .container { padding: 20px; padding-bottom: 90px; max-width: 1100px; margin: auto; }
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        .section-card { 
-            background: white; 
-            border-radius: 12px; 
-            padding: 30px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            min-height: 400px;
-        }
+        /* Calendario Lunes-Domingo */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: #ddd; border: 1px solid #ddd; }
+        .cal-day { background: white; min-height: 80px; padding: 5px; font-size: 12px; }
+        .cal-header { background: var(--azul); color: white; text-align: center; padding: 5px; font-weight: bold; }
+        .sale-dot { background: var(--verde); color: white; padding: 2px; border-radius: 3px; margin-top: 2px; font-size: 10px; }
+        .pred-dot { background: var(--naranja); color: white; padding: 2px; border-radius: 3px; margin-top: 2px; font-size: 10px; }
 
-        h2 { color: var(--naranja); margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        /* Mapa */
+        .map-frame { width: 100%; height: 350px; border-radius: 10px; border: none; }
 
-        /* ESTILOS DE GUÍA DE USO */
-        .grid-clientes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .card-cliente { border: 1px solid #eee; padding: 15px; border-radius: 8px; text-align: center; }
-        .btn-wsp { background: #25D366; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; }
+        /* Botones Acción */
+        .btn-wsp { background: var(--verde); color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        .btn-word { background: #2b579a; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
 
-        #loader { text-align: center; margin-top: 100px; font-size: 1.2rem; color: var(--azul); }
+        .hidden { display: none; }
+        h2 { color: var(--naranja); font-size: 22px; margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="loader">Iniciando sistema logístico...</div>
+    <header>
+        <div><strong>ABASTIBLE LINARES</strong></div>
+        <button class="btn-plus" onclick="mostrarSeccion('venta-rapida')">+</button>
+    </header>
 
-    <div id="app-content" style="display: none;">
-        <header>
-            <div style="font-weight: bold; font-size: 1.2rem;">ABASTIBLE LINARES</div>
-            <button class="btn-venta-rapida" onclick="abrirVentaRapida()" title="Registro de Venta Rápida">+</button>
-        </header>
-
-        <div class="nav-tabs">
-            <div class="tab active" onclick="cambiarTab(this, 'Despacho')">Despacho</div>
-            <div class="tab" onclick="cambiarTab(this, 'Agenda')">Agenda</div>
-            <div class="tab" onclick="cambiarTab(this, 'Gestión')">Gestión</div>
-            <div class="tab" onclick="cambiarTab(this, 'Métricas')">Métricas</div>
-        </div>
-
-        <div class="main-content">
-            <div class="section-card">
-                <h2 id="titulo-seccion">Despacho (Dashboard)</h2>
-                <div id="contenido-dinamico">
-                    <p>Visualización de zona Linares y acceso directo a clientes.</p>
-                    <div class="grid-clientes">
-                        <div class="card-cliente">
-                            <strong>Cliente Ejemplo</strong>
-                            <button class="btn-wsp">WhatsApp</button>
-                            <button style="margin-top:5px; width:100%; cursor:pointer;">REPETIR PEDIDO</button>
-                        </div>
+    <div class="container" id="content-main">
+        
+        <div id="despacho" class="section">
+            <div class="card">
+                <h2>Zona de Despacho (Linares)</h2>
+                <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3224.5!2d-71.6!3d-35.84!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9665f90!2sLinares%2C%20Maule!5e0!3m2!1ses-419!2scl!4v1700000000"></iframe>
+            </div>
+            
+            <div class="card">
+                <h2>Clientes en Alerta (Frecuencia)</h2>
+                <div id="lista-alertas">
+                    <div style="border-left: 5px solid var(--naranja); padding: 10px; background: #fff9f5;">
+                        <strong>Panadería La Unión</strong> - Toca Hoy (Cada 7 días)<br>
+                        <small>📍 Arturo Prat 450</small>
+                        <button class="btn-wsp" onclick="coordinarPedido('Panadería La Unión', 'Arturo Prat 450', '2x 45kg', 1)">COORDINAR DESPACHO (Chofer 1)</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div id="agenda" class="section hidden">
+            <div class="card">
+                <h2>Calendario de Ventas y Predicciones</h2>
+                <div class="calendar-grid">
+                    <div class="cal-header">Lun</div><div class="cal-header">Mar</div><div class="cal-header">Mié</div>
+                    <div class="cal-header">Jue</div><div class="cal-header">Vie</div><div class="cal-header">Sáb</div><div class="cal-header">Dom</div>
+                    <div class="cal-day">13 <div class="sale-dot">🚚 C3 - 2x15</div></div>
+                    <div class="cal-day">14 <div class="pred-dot">💡 Panadería</div></div>
+                    <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Historial y Reporte Word</h2>
+                <select id="historial-cliente" style="width:100%; padding:10px; margin-bottom:10px;">
+                    <option>Seleccionar Cliente Comercial...</option>
+                    <option>Restaurant Linares</option>
+                </select>
+                <button class="btn-word" onclick="exportarWord()">Descargar Historial (.doc)</button>
+            </div>
+        </div>
+
+        <div id="gestion" class="section hidden">
+            <div class="card">
+                <h2>Configuración de Choferes</h2>
+                <div id="lista-choferes">
+                    <input type="text" placeholder="Chofer 1" value="Juan Pérez" style="width:80%; padding:8px; margin-bottom:5px;">
+                </div>
+            </div>
+            <div class="card">
+                <h2>Precios Negociados por Formato</h2>
+                <table style="width:100%; font-size:14px;">
+                    <tr><td>5 Kg</td><td><input type="number" value="12000" style="width:80px;"></td></tr>
+                    <tr><td>11 Kg</td><td><input type="number" value="21500" style="width:80px;"></td></tr>
+                    <tr><td>15 VMA</td><td><input type="number" value="28000" style="width:80px;"></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="metricas" class="section hidden">
+            <div class="card" style="background: var(--azul); color: white;">
+                <h2 style="color: white; border-bottom-color: rgba(255,255,255,0.2);">Semana Full</h2>
+                <div style="font-size: 24px;">Total: $450.800</div>
+                <div style="margin-top:10px;">Cilindros vendidos: 42</div>
+            </div>
+            <button class="btn-wsp" onclick="copiarReporte()">COPIAR REPORTE WHATSAPP 📋</button>
+            <button class="btn-word" onclick="descargarTXT()" style="margin-top:10px; width:100%;">DESCARGAR RESPALDO (.TXT)</button>
+        </div>
+
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="mostrarSeccion('despacho', this)">📊<br>Despacho</div>
+        <div class="nav-item" onclick="mostrarSeccion('agenda', this)">📅<br>Agenda</div>
+        <div class="nav-item" onclick="mostrarSeccion('gestion', this)">⚙️<br>Gestión</div>
+        <div class="nav-item" onclick="mostrarSeccion('metricas', this)">📈<br>Métricas</div>
     </div>
 
     <script>
+        // Configuración Firebase (Mantenemos tu conexión exitosa)
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
             authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
@@ -120,40 +152,44 @@
             messagingSenderId: "367280386762",
             appId: "1:367280386762:web:a6f7b764d0d0c3a2f3f9f3"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
-            } else {
-                window.location.replace("index.html");
-            }
-        });
-
-        function cambiarTab(elemento, nombreSeccion) {
-            // Manejo de UI de las pestañas
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            elemento.classList.add('active');
-            
-            // Cambio de Título
-            document.getElementById('titulo-seccion').innerText = nombreSeccion;
-            
-            // Aquí se cargará la lógica de cada pestaña según tu guía
-            const contenido = document.getElementById('contenido-dinamico');
-            if(nombreSeccion === 'Métricas') {
-                contenido.innerHTML = '<button class="btn-wsp">COPIAR REPORTE WHATSAPP</button><p>Reporte de los últimos 7 días...</p>';
-            } else if(nombreSeccion === 'Agenda') {
-                contenido.innerHTML = '<p>Calendario y Predicciones de consumo (💡)</p>';
-            } else {
-                contenido.innerHTML = '<p>Contenido de ' + nombreSeccion + ' según guía de uso.</p>';
+        function mostrarSeccion(id, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            if(el) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
             }
         }
 
-        function abrirVentaRapida() {
-            alert("Iniciando Selección Inteligente de Cliente...");
+        // FUNCIÓN WHATSAPP COORDINACIÓN
+        function coordinarPedido(cliente, dir, pedido, chofer) {
+            const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dir + ' Linares')}`;
+            const texto = `🚚 *COORDINACIÓN ABASTIBLE*\n\n*Cliente:* ${cliente}\n*Pedido:* ${pedido}\n*Dirección:* ${dir}\n*Chofer:* #${chofer}\n\n📍 *Ubicación:* ${mapsLink}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
+        }
+
+        // EXPORTAR WORD (HISTORIAL)
+        function exportarWord() {
+            const cliente = document.getElementById('historial-cliente').value;
+            const contenido = `
+                <div style="font-family: Arial; color: #333;">
+                    <h1 style="color: #FF5000;">Historial de pedidos: ${cliente}</h1>
+                    <table border="1" style="width:100%; border-collapse: collapse;">
+                        <tr style="background: #eee;"><th>Fecha</th><th>Producto</th><th>Cant.</th><th>Total</th></tr>
+                        <tr><td>12/04/2026</td><td>45 Kg</td><td>2</td><td>$98.000</td></tr>
+                        <tr><td>05/04/2026</td><td>45 Kg</td><td>2</td><td>$98.000</td></tr>
+                    </table>
+                </div>`;
+            const blob = new Blob(['\ufeff', contenido], { type: 'application/msword' });
+            saveAs(blob, `Historial de pedidos [${cliente}].doc`);
+        }
+
+        function descargarTXT() {
+            const data = "REPORTE SEMANAL ABASTIBLE LINARES\nTotal Ingresos: $450.800\nCilindros: 42";
+            const blob = new Blob([data], { type: 'text/plain' });
+            saveAs(blob, "Reporte_Semanal.txt");
         }
     </script>
 </body>
