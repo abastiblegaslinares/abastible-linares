@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Abastible</title>
+    <title>Abastible Linares - Acceso</title>
     <style>
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             background-color: #ffffff; 
             display: flex; 
@@ -14,13 +14,19 @@
             align-items: center; 
             height: 100vh; 
         }
-        .container { text-align: center; }
-        /* Bienvenido en NARANJA */
+        .login-card { 
+            text-align: center; 
+            padding: 40px; 
+            width: 100%; 
+            max-width: 350px; 
+        }
+        /* Letras Bienvenido en NARANJA */
         h1 { 
             color: #FF5000; 
-            font-size: 32px; 
+            font-size: 35px; 
             margin-bottom: 40px; 
             font-weight: bold; 
+            letter-spacing: -1px;
         }
         .btn-google { 
             background-color: white; 
@@ -33,15 +39,16 @@
             cursor: pointer; 
             display: inline-flex; 
             align-items: center; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
-        .btn-google img { width: 18px; margin-right: 10px; }
-        .btn-google:hover { background-color: #f8f9fa; }
+        .btn-google:hover { background-color: #f8f9fa; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .btn-google img { width: 18px; margin-right: 12px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="login-card">
         <h1>¡Bienvenido!</h1>
         <button class="btn-google" onclick="window.login()">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
@@ -55,8 +62,7 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
-            // Usamos el dominio DEFAULT para asegurar la conexión
-            authDomain: "control-de-pedidos-71c6b.web.app", 
+            authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
             projectId: "control-de-pedidos-71c6b",
             storageBucket: "control-de-pedidos-71c6b.appspot.com",
             messagingSenderId: "367280386762",
@@ -70,11 +76,19 @@
         window.login = function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    window.location.href = "pedidos.html";
+                    console.log("Login exitoso");
+                    
+                    // SOLUCIÓN AL ERROR 404: 
+                    // Si estamos en GitHub, usamos la ruta con la subcarpeta
+                    if (window.location.hostname.includes("github.io")) {
+                        window.location.href = "/abastible-linares/pedidos.html";
+                    } else {
+                        window.location.href = "pedidos.html";
+                    }
                 })
                 .catch((error) => {
                     console.error("Error:", error.code);
-                    alert("Error: " + error.code + ". Verifique que el dominio Custom esté autorizado.");
+                    alert("Error al ingresar: " + error.message);
                 });
         };
     </script>
