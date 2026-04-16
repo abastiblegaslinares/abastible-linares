@@ -3,53 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Pedidos - Abastible Linares</title>
+    <title>Sistema de Gestión - Abastible</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        :root { --naranja: #FF5000; --azul: #003399; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
-        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo-text { color: var(--azul); font-weight: bold; font-size: 20px; }
-        .btn-logout { background: #eee; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-        .main-container { max-width: 800px; margin: 40px auto; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h2 { color: var(--naranja); border-bottom: 2px solid var(--naranja); padding-bottom: 10px; }
+        :root { --naranja: #FF5000; --azul: #003399; --fondo: #f0f2f5; }
+        
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--fondo); color: #333; }
+        
+        /* Loader inicial */
+        #loader { text-align: center; margin-top: 100px; font-weight: bold; color: var(--azul); }
+
+        /* Barra de Navegación Superior */
+        nav { 
+            background: var(--azul); 
+            padding: 0 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-links { display: flex; gap: 20px; }
+        
+        .nav-item { 
+            color: white; 
+            text-decoration: none; 
+            font-weight: 500; 
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-item:hover { background: rgba(255,255,255,0.1); border-bottom: 3px solid var(--naranja); }
+
+        .user-area { display: flex; align-items: center; gap: 15px; color: white; font-size: 14px; }
+        
+        .btn-logout { 
+            background: var(--naranja); 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+
+        /* Contenedor de Contenido */
+        .container { max-width: 1000px; margin: 30px auto; padding: 20px; }
+        
+        .card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 30px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--naranja);
+        }
+
+        h2 { color: var(--azul); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        
+        /* Estética de Formulario */
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn-submit { background: var(--naranja); color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
-        #loader { text-align: center; margin-top: 100px; font-size: 18px; color: var(--azul); font-weight: bold; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        input, select { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; 
+            box-sizing: border-box; font-size: 16px;
+        }
+        
+        .btn-action { 
+            background: var(--naranja); color: white; border: none; padding: 15px; 
+            border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; 
+            font-size: 18px; transition: transform 0.1s;
+        }
+        .btn-action:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div id="loader">Verificando acceso...</div>
+    <div id="loader">Cargando panel de gestión...</div>
 
     <div id="app-content" style="display: none;">
         <nav>
-            <div class="logo-text">ABASTIBLE LINARES</div>
-            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            <div class="nav-links">
+                <div class="nav-item" onclick="cambiarSeccion('Despacho')">Despacho</div>
+                <div class="nav-item" onclick="cambiarSeccion('Agenda')">Agenda</div>
+                <div class="nav-item" onclick="cambiarSeccion('Gestión')">Gestión</div>
+                <div class="nav-item" onclick="cambiarSeccion('Métricas')">Métricas</div>
+            </div>
+            
+            <div class="user-area">
+                <span id="user-display"></span>
+                <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+            </div>
         </nav>
 
-        <div class="main-container">
+        <div class="container">
             <div class="card">
-                <h2>Nuevo Pedido</h2>
-                <div class="form-group">
-                    <label>Cliente / Dirección</label>
-                    <input type="text" placeholder="Ej: Calle Principal 123">
+                <h2 id="seccion-titulo">Despacho</h2>
+                <div id="seccion-contenido">
+                    <div class="form-group">
+                        <label>Nombre del Cliente</label>
+                        <input type="text" placeholder="Ingrese nombre o dirección">
+                    </div>
+                    <div class="form-group">
+                        <label>Producto</label>
+                        <select>
+                            <option>Cilindro 11kg</option>
+                            <option>Cilindro 15kg</option>
+                            <option>Cilindro 45kg</option>
+                            <option>H-15</option>
+                        </select>
+                    </div>
+                    <button class="btn-action">Registrar en Despacho</button>
                 </div>
-                <div class="form-group">
-                    <label>Tipo de Gas</label>
-                    <select>
-                        <option>Gas 11kg</option>
-                        <option>Gas 15kg</option>
-                        <option>Gas 45kg</option>
-                    </select>
-                </div>
-                <button class="btn-submit">Registrar Pedido</button>
             </div>
         </div>
     </div>
@@ -64,26 +133,29 @@
             appId: "1:367280386762:web:a6f7b764d0d0c3a2f3f9f3"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Escuchar el estado de la sesión
+        // Verificar sesión
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // Usuario autenticado: mostrar contenido
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('app-content').style.display = 'block';
+                document.getElementById('user-display').innerText = user.displayName;
             } else {
-                // Sin sesión: redirigir al login
                 window.location.replace("index.html");
             }
         });
 
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.replace("index.html");
-            });
+        // Lógica de navegación de la barra
+        function cambiarSeccion(nombre) {
+            document.getElementById('seccion-titulo').innerText = nombre;
+            // Aquí podrás añadir lógica para cambiar el formulario según la sección
+            console.log("Cambiando a sección: " + nombre);
+        }
+
+        function cerrarSesion() {
+            auth.signOut().then(() => window.location.replace("index.html"));
         }
     </script>
 </body>
