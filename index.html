@@ -70,10 +70,12 @@
     </div>
 
     <script>
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         // --- CREDENCIALES ---
         const firebaseConfig = {
             apiKey: "AIzaSyAizx3OXbUjzJjAtbp74HiUIUFlLguC4qc",
-            authDomain: "abastiblegaslinares.github.io",
+            authDomain: "control-de-pedidos-71c6b.firebaseapp.com",
             projectId: "control-de-pedidos-71c6b",
             storageBucket: "control-de-pedidos-71c6b.firebasestorage.app",
             messagingSenderId: "367280386762",
@@ -82,7 +84,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = getAuth();
+        const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
@@ -108,17 +110,17 @@
 
         // Inicio de sesión por Redirección (Mejor para Hosting)
         window.login = function() {
-            window.login = function() {
-                signInWithPopup(auth, provider)
-                    .then((result) => {
-                        console.log("¡Éxito!", result.user)
-                        alert("Bienvenido " + result.user.displayName);
-                        window.location.href = "pedidos.html";
-                    })
-                    .catch((error) => {
-                        console.error("Error al entrar:", error.message);
-                        alert("Error: " + error.message);
-                    });
+            console.log("Iniciando proceso de login...");
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("¡Éxito!", result.user)
+                    alert("Bienvenido " + result.user.displayName);
+                    window.location.href = "pedidos.html";
+                })
+                .catch((error) => {
+                    console.error("Error al entrar:", error.message);
+                    alert("Error: " + error.message);
+                });
         }
 
         // --- NAVEGACIÓN ---
